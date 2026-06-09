@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+<title>Open Window 64 — Harada Method Goal Grid</title>
+<meta name="description" content="Build and share your Harada Method Open Window 64 goal chart. One big goal, eight themes, sixty-four actions." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --paper:#f7f4ee;
+    --paper-2:#fffdfa;
+    --ink:#1b1916;
+    --ink-soft:#6c6760;
+    --ink-faint:#a7a299;
+    --line:#e1dbd0;
+    --line-strong:#3a352e;
+    --seal:#c0392b;       /* vermillion accent */
+    --seal-soft:#c0392b14;
+    --core:#1b1916;
+    --radius:10px;
+    --shadow-card:0 24px 60px -18px rgba(27,25,22,.45), 0 8px 24px -12px rgba(27,25,22,.3);
+    --ease:cubic-bezier(.22,.61,.36,1);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:
+      radial-gradient(120% 100% at 50% -10%, #fffdfa 0%, var(--paper) 55%, #f1ece3 100%) fixed;
+    color:var(--ink);
+    font-family:"Hanken Grotesk",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  /* ---------- top bar ---------- */
+  header{
+    max-width:980px;margin:0 auto;padding:34px 20px 8px;
+    display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;
+  }
+  .brand{display:flex;flex-direction:column;gap:6px;min-width:0}
+  .kicker{
+    font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--seal);
+    font-weight:600;display:flex;align-items:center;gap:9px;
+  }
+  .kicker::before{content:"";width:18px;height:1px;background:var(--seal);display:inline-block}
+  .title-input{
+    font-family:"Fraunces",serif;font-weight:600;font-size:clamp(26px,4.4vw,40px);
+    line-height:1.04;letter-spacing:-.015em;color:var(--ink);
+    border:none;background:transparent;padding:2px 0;margin:0;width:min(560px,80vw);
+    outline:none;border-bottom:1.5px dashed transparent;transition:border-color .2s;
+  }
+  .title-input:focus,.title-input:hover{border-bottom-color:var(--line)}
+  .title-input::placeholder{color:var(--ink-faint)}
+
+  .actions{display:flex;gap:9px;flex-wrap:wrap}
+  button.btn{
+    font-family:inherit;font-size:13px;font-weight:600;letter-spacing:.01em;
+    padding:10px 15px;border-radius:8px;cursor:pointer;border:1px solid var(--line);
+    background:var(--paper-2);color:var(--ink);transition:.18s var(--ease);
+    display:inline-flex;align-items:center;gap:7px;
+  }
+  button.btn:hover{transform:translateY(-1px);border-color:#cfc8bc;box-shadow:0 6px 16px -10px rgba(27,25,22,.4)}
+  button.btn:active{transform:translateY(0)}
+  button.btn.primary{background:var(--seal);color:#fff;border-color:var(--seal)}
+  button.btn.primary:hover{background:#a93226}
+  button.btn svg{width:15px;height:15px}
+
+  /* ---------- read-only banner ---------- */
+  .ribbon{
+    max-width:980px;margin:10px auto 0;padding:0 20px;
+  }
+  .ribbon-inner{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+    background:var(--seal-soft);border:1px solid #c0392b33;border-radius:10px;
+    padding:12px 16px;
+  }
+  .ribbon-inner p{margin:0;font-size:13.5px;color:var(--ink)}
+  .ribbon-inner strong{font-weight:600}
+  .hidden{display:none !important}
+
+  /* ---------- grid ---------- */
+  main{max-width:980px;margin:0 auto;padding:18px 20px 70px}
+  .legend{
+    display:flex;gap:18px;flex-wrap:wrap;color:var(--ink-soft);font-size:12.5px;
+    margin:6px 2px 18px;align-items:center;
+  }
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+  .dot{width:11px;height:11px;border-radius:3px;display:inline-block;border:1px solid var(--line)}
+  .dot.core{background:var(--ink)}
+  .dot.theme{background:#fff;border:1.5px solid var(--seal)}
+  .dot.action{background:var(--paper-2)}
+
+  .grid-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;margin:0 -4px}
+  .grid{
+    --gap:5px;
+    display:grid;grid-template-columns:repeat(9,1fr);gap:var(--gap);
+    background:var(--line-strong);
+    padding:var(--gap);border-radius:14px;
+    min-width:620px;margin:0 4px;
+    box-shadow:0 30px 70px -40px rgba(27,25,22,.5);
+  }
+  .cell{
+    position:relative;aspect-ratio:1/1;border:none;cursor:pointer;
+    background:var(--paper-2);border-radius:5px;padding:6px 5px;
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    font-family:inherit;font-size:clamp(8px,1.05vw,11px);line-height:1.18;
+    color:var(--ink);overflow:hidden;transition:transform .16s var(--ease),box-shadow .16s var(--ease),background .2s;
+    word-break:break-word;
+  }
+  .cell:hover{box-shadow:inset 0 0 0 1.5px var(--seal);z-index:2}
+  .cell:focus-visible{outline:none;box-shadow:inset 0 0 0 2px var(--seal);z-index:3}
+  .cell.empty{color:var(--ink-faint)}
+  .cell.empty::after{content:"+";font-size:15px;font-weight:500;color:var(--line)}
+  .cell.empty .txt{display:none}
+  .cell .txt{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+
+  /* core + theme styling */
+  .cell.core{background:var(--ink);color:#fff;font-weight:600}
+  .cell.core.empty::after{color:#5a554d}
+  .cell.theme{font-weight:600;box-shadow:inset 0 0 0 1.5px var(--seal)}
+  .cell.theme.empty::after{color:var(--seal)}
+  /* hide the FLIP source cell while its card is open */
+  .cell.lifted{opacity:0}
+
+  /* very faint per-block tint */
+  .cell[data-tint]{background-color:var(--paper-2)}
+
+  /* ---------- focus card (FLIP target) ---------- */
+  #backdrop{
+    position:fixed;inset:0;z-index:40;background:rgba(28,25,21,.34);
+    backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+    opacity:0;transition:opacity .26s var(--ease);pointer-events:none;
+  }
+  #backdrop.show{opacity:1;pointer-events:auto}
+  #card{
+    position:fixed;z-index:50;left:50%;top:50%;display:none;
+    width:min(460px,92vw);transform-origin:top left;
+    background:var(--paper-2);border-radius:16px;box-shadow:var(--shadow-card);
+    border:1px solid var(--line);overflow:hidden;will-change:transform;
+  }
+  #card .card-head{
+    padding:16px 18px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .pill{
+    font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+    padding:5px 10px;border-radius:999px;color:var(--seal);background:var(--seal-soft);
+  }
+  .pill.core{color:#fff;background:var(--ink)}
+  .closex{border:none;background:transparent;cursor:pointer;color:var(--ink-soft);
+    font-size:20px;line-height:1;padding:4px;border-radius:6px}
+  .closex:hover{background:var(--line);color:var(--ink)}
+  #card .card-body{padding:8px 18px 18px}
+  #card label{display:block;font-size:11px;font-weight:600;letter-spacing:.05em;
+    text-transform:uppercase;color:var(--ink-soft);margin:12px 2px 6px}
+  #card input.name{
+    width:100%;font-family:"Fraunces",serif;font-size:22px;font-weight:600;
+    color:var(--ink);border:none;border-bottom:1.5px solid var(--line);
+    padding:4px 2px 8px;outline:none;background:transparent;transition:border-color .2s;
+  }
+  #card input.name:focus{border-bottom-color:var(--seal)}
+  #card textarea.desc{
+    width:100%;min-height:104px;resize:vertical;font-family:inherit;font-size:14.5px;
+    line-height:1.5;color:var(--ink);border:1px solid var(--line);border-radius:10px;
+    padding:11px 12px;outline:none;background:var(--paper);transition:border-color .2s;
+  }
+  #card textarea.desc:focus{border-color:var(--seal);background:#fff}
+  #card .card-foot{padding:0 18px 18px;display:flex;justify-content:flex-end;gap:9px}
+  #card[data-ro="1"] input,#card[data-ro="1"] textarea{pointer-events:none;opacity:.92}
+  #card .ro-note{font-size:12px;color:var(--ink-soft);padding:0 20px 16px;margin:0}
+
+  /* ---------- toast ---------- */
+  #toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,16px);
+    background:var(--ink);color:#fff;font-size:13.5px;font-weight:500;
+    padding:11px 17px;border-radius:10px;z-index:80;opacity:0;pointer-events:none;
+    transition:.28s var(--ease);box-shadow:0 12px 30px -10px rgba(0,0,0,.5);
+  }
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+
+  footer{max-width:980px;margin:0 auto;padding:0 20px 40px;color:var(--ink-faint);font-size:12px}
+  footer a{color:var(--ink-soft)}
+
+  @media (max-width:560px){
+    header{padding-top:24px}
+    #card{width:100vw;max-width:100vw;left:0;top:auto;bottom:0;border-radius:18px 18px 0 0}
+    .grid{min-width:520px}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="kicker">Open Window 64 · Harada Method</span>
+      <input id="title" class="title-input" maxlength="80" placeholder="Name your chart…" />
+    </div>
+    <div class="actions" id="editActions">
+      <button class="btn" id="btnShare" title="Copy a shareable link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+        Share link
+      </button>
+      <button class="btn" id="btnImage" title="Download a PNG image">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        Save image
+      </button>
+      <button class="btn" id="btnNew" title="Start a blank chart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+        New
+      </button>
+    </div>
+  </header>
+
+  <div class="ribbon hidden" id="ribbon">
+    <div class="ribbon-inner">
+      <p>You're viewing a shared chart, read-only. <strong id="ribbonName"></strong></p>
+      <button class="btn primary" id="btnMine">Make my own copy</button>
+    </div>
+  </div>
+
+  <main>
+    <div class="legend">
+      <span><i class="dot core"></i> Main goal</span>
+      <span><i class="dot theme"></i> 8 themes</span>
+      <span><i class="dot action"></i> 64 actions</span>
+      <span style="color:var(--ink-faint)">· tap a square to write its name &amp; notes</span>
+    </div>
+    <div class="grid-scroll">
+      <div class="grid" id="grid" aria-label="Open Window 64 goal grid"></div>
+    </div>
+  </main>
+
+  <footer>
+    The Harada Method's Mandalart: one central goal, eight supporting themes, sixty-four concrete actions.
+    Everything stays on your device — sharing puts the chart in the link itself.
+  </footer>
+
+  <div id="backdrop"></div>
+  <div id="card" aria-modal="true" role="dialog"></div>
+  <div id="toast"></div>
+
+<script>
+"use strict";
+(function(){
+  /* ============================ state ============================ */
+  const blank = () => ({name:"",desc:""});
+  function blankState(){
+    return {
+      title:"",
+      core:blank(),
+      themes:Array.from({length:8},blank),
+      actions:Array.from({length:8},()=>Array.from({length:8},blank))
+    };
+  }
+  let state = blankState();
+  let readOnly = false;
+  const LS_KEY = "haradaGrid.v1";
+
+  /* ---- block / ring layout maps (see spec) ---- */
+  // ring order of the 8 non-center cells within any 3x3 block
+  const RING = [[0,0],[0,1],[0,2],[1,0],[1,2],[2,0],[2,1],[2,2]];
+  function ringIndex(r,c){ // 0..7 or -1 for center
+    if(r===1&&c===1) return -1;
+    return RING.findIndex(p=>p[0]===r&&p[1]===c);
+  }
+  // blockPos 0..8 (br*3+bc); center is 4. Map outer blocks -> theme index 0..7
+  const BLOCK_THEME = {0:0,1:1,2:2,3:3,5:4,6:5,7:6,8:7};
+
+  // descriptor for a global cell (R,C) 0..8
+  function descriptorFor(R,C){
+    const br=(R/3)|0, bc=(C/3)|0, r=R%3, c=C%3;
+    const blockPos = br*3+bc;
+    const ri = ringIndex(r,c);
+    if(blockPos===4){ // center block
+      if(ri<0) return {type:"core"};
+      return {type:"theme", t:ri};
+    }
+    const t = BLOCK_THEME[blockPos];
+    if(ri<0) return {type:"theme", t};          // mirrored theme = block center
+    return {type:"action", t, a:ri};
+  }
+  function getCell(d){
+    if(d.type==="core") return state.core;
+    if(d.type==="theme") return state.themes[d.t];
+    return state.actions[d.t][d.a];
+  }
+
+  /* ============================ persistence ============================ */
+  function save(){ if(!readOnly) try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+  function load(){
+    try{ const s=localStorage.getItem(LS_KEY); if(s){ state = normalize(JSON.parse(s)); return true; } }catch(e){}
+    return false;
+  }
+  function normalize(o){
+    const s = blankState();
+    if(!o||typeof o!=="object") return s;
+    s.title = String(o.title||"");
+    const cp = x => ({name:String((x&&x.name)||""),desc:String((x&&x.desc)||"")});
+    s.core = cp(o.core);
+    for(let i=0;i<8;i++){ s.themes[i]=cp(o.themes&&o.themes[i]); for(let j=0;j<8;j++) s.actions[i][j]=cp(o.actions&&o.actions[i]&&o.actions[i][j]); }
+    return s;
+  }
+
+  /* ============================ share encoding ============================ */
+  // compact form: [title, [n,d], [[n,d]x8], [[[n,d]x8]x8]]
+  function pack(s){
+    const c = x => [x.name,x.desc];
+    return [s.title, c(s.core), s.themes.map(c), s.actions.map(r=>r.map(c))];
+  }
+  function unpack(a){
+    const s = blankState();
+    try{
+      s.title = String(a[0]||"");
+      const u = x => ({name:String((x&&x[0])||""),desc:String((x&&x[1])||"")});
+      s.core = u(a[1]);
+      for(let i=0;i<8;i++){ s.themes[i]=u(a[2]&&a[2][i]); for(let j=0;j<8;j++) s.actions[i][j]=u(a[3]&&a[3][i]&&a[3][i][j]); }
+    }catch(e){}
+    return s;
+  }
+  function b64encode(str){ return btoa(unescape(encodeURIComponent(str))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+  function b64decode(b){ b=b.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4)b+='='; return decodeURIComponent(escape(atob(b))); }
+  function encodeState(s){ return b64encode(JSON.stringify(pack(s))); }
+  function decodeState(hash){ return unpack(JSON.parse(b64decode(hash))); }
+
+  /* ============================ grid render ============================ */
+  const gridEl = document.getElementById("grid");
+  const cellEls = []; // [R][C]
+  function buildGrid(){
+    gridEl.innerHTML="";
+    for(let R=0;R<9;R++){ cellEls[R]=[];
+      for(let C=0;C<9;C++){
+        const d = descriptorFor(R,C);
+        const b = document.createElement("button");
+        b.className="cell "+d.type;
+        b.dataset.r=R; b.dataset.c=C;
+        const tintTheme = d.type==="core" ? -1 : d.t;
+        if(tintTheme>=0) b.style.backgroundColor = `hsl(${(tintTheme*44)} 38% 97%)`;
+        const span=document.createElement("span"); span.className="txt";
+        b.appendChild(span);
+        b.addEventListener("click",()=>openCard(R,C,b));
+        gridEl.appendChild(b);
+        cellEls[R][C]=b;
+      }
+    }
+    paintGrid();
+  }
+  function paintGrid(){
+    for(let R=0;R<9;R++)for(let C=0;C<9;C++){
+      const b=cellEls[R][C], d=descriptorFor(R,C), cell=getCell(d);
+      const name=cell.name.trim();
+      b.querySelector(".txt").textContent = name;
+      b.classList.toggle("empty", name==="");
+      b.title = name || (d.type==="core"?"Main goal":d.type==="theme"?"Theme":"Action");
+    }
+    document.getElementById("title").value = state.title;
+  }
+
+  /* ============================ focus card (FLIP) ============================ */
+  const backdrop=document.getElementById("backdrop");
+  const card=document.getElementById("card");
+  let openState=null; // {R,C,sourceEl}
+
+  function openCard(R,C,sourceEl){
+    if(openState) return;
+    const d=descriptorFor(R,C); const cell=getCell(d);
+    const label = d.type==="core" ? "Main goal" : d.type==="theme" ? ("Theme "+(d.t+1)) : ("Action "+(d.t+1)+"·"+(d.a+1));
+    card.dataset.ro = readOnly ? "1":"0";
+    card.innerHTML = `
+      <div class="card-head">
+        <span class="pill ${d.type==='core'?'core':''}">${label}</span>
+        <button class="closex" id="cardClose" aria-label="Close">×</button>
+      </div>
+      <div class="card-body">
+        <label>${d.type==='core'?'Your one big goal':d.type==='theme'?'Theme name':'Action'}</label>
+        <input class="name" id="fName" maxlength="120" placeholder="${d.type==='action'?'What will you do?':'Write a name…'}" />
+        <label>Description &amp; notes</label>
+        <textarea class="desc" id="fDesc" maxlength="2000" placeholder="Why it matters, how you'll measure it, specifics…"></textarea>
+      </div>
+      ${readOnly?'<p class="ro-note">Read-only — make your own copy to edit.</p>':''}
+      <div class="card-foot">
+        <button class="btn primary" id="cardDone">Done</button>
+      </div>`;
+
+    const nameI=card.querySelector("#fName"), descI=card.querySelector("#fDesc");
+    nameI.value=cell.name; descI.value=cell.desc;
+    if(!readOnly){
+      const onInput=()=>{ cell.name=nameI.value; cell.desc=descI.value; paintGrid(); save(); };
+      nameI.addEventListener("input",onInput); descI.addEventListener("input",onInput);
+    }
+    card.querySelector("#cardClose").addEventListener("click",closeCard);
+    card.querySelector("#cardDone").addEventListener("click",closeCard);
+
+    openState={R,C,sourceEl};
+    card.style.display="block";
+    sourceEl.classList.add("lifted");
+    backdrop.classList.add("show");
+    backdrop.addEventListener("click",closeCard,{once:true});
+
+    // FLIP: show card at its resting place, then map transform back onto the source cell, then release
+    card.style.transform="none"; card.style.opacity="1";
+    const src=sourceEl.getBoundingClientRect();
+    const dst=card.getBoundingClientRect();
+    const sx=src.width/dst.width, sy=src.height/dst.height;
+    const tx=src.left-dst.left, ty=src.top-dst.top;
+    card.style.transition="none";
+    card.style.transformOrigin="top left";
+    card.style.transform=`translate(${tx}px,${ty}px) scale(${sx},${sy})`;
+    card.style.borderRadius="5px";
+    card.getBoundingClientRect(); // force reflow
+    card.style.transition="transform .34s var(--ease), border-radius .34s var(--ease)";
+    requestAnimationFrame(()=>{ card.style.transform="none"; card.style.borderRadius=""; });
+
+    if(!readOnly) setTimeout(()=>{ nameI.focus(); nameI.setSelectionRange(nameI.value.length,nameI.value.length); },130);
+    document.addEventListener("keydown",onKey);
+  }
+
+  function closeCard(){
+    if(!openState) return;
+    const {sourceEl}=openState; openState=null;
+    document.removeEventListener("keydown",onKey);
+    const src=sourceEl.getBoundingClientRect();
+    const dst=card.getBoundingClientRect();
+    const sx=src.width/dst.width, sy=src.height/dst.height;
+    const tx=src.left-dst.left, ty=src.top-dst.top;
+    card.style.transition="transform .3s var(--ease), border-radius .3s var(--ease), opacity .3s var(--ease)";
+    card.style.transformOrigin="top left";
+    card.style.transform=`translate(${tx}px,${ty}px) scale(${sx},${sy})`;
+    card.style.borderRadius="5px"; card.style.opacity="0";
+    backdrop.classList.remove("show");
+    setTimeout(()=>{ sourceEl.classList.remove("lifted"); card.innerHTML=""; card.style.display="none"; card.style.transition="none"; card.style.transform="none"; card.style.opacity=""; card.style.borderRadius=""; sourceEl.focus(); },300);
+  }
+  function onKey(e){ if(e.key==="Escape") closeCard(); }
+
+  /* ============================ toast ============================ */
+  let toastT;
+  function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"),2200); }
+
+  /* ============================ PNG export ============================ */
+  function exportPNG(){
+    const S=1200, pad=64, scale=2;
+    const cv=document.createElement("canvas"); cv.width=S*scale; cv.height=S*scale;
+    const x=cv.getContext("2d"); x.scale(scale,scale);
+    x.fillStyle="#f7f4ee"; x.fillRect(0,0,S,S);
+    // title
+    const titleY=70;
+    x.fillStyle="#c0392b"; x.font="600 15px 'Hanken Grotesk',sans-serif"; x.textBaseline="alphabetic";
+    x.fillText("OPEN WINDOW 64 · HARADA METHOD", pad, 44);
+    x.fillStyle="#1b1916"; x.font="600 32px 'Fraunces',serif";
+    x.fillText(state.title||"My Goal Chart", pad, titleY+18);
+    // grid
+    const gx=pad, gy=titleY+50, gsize=S-pad*2, gap=4;
+    const cs=(gsize-gap*10)/9;
+    function drawCell(R,C){
+      const d=descriptorFor(R,C), cell=getCell(d), name=cell.name.trim();
+      const px=gx+gap+(C)*(cs+gap), py=gy+gap+(R)*(cs+gap);
+      let bg="#fffdfa", fg="#1b1916", border=null, weight="500";
+      if(d.type==="core"){ bg="#1b1916"; fg="#ffffff"; weight="600"; }
+      else if(d.type==="theme"){ bg="#fff"; border="#c0392b"; weight="600"; }
+      else { bg=`hsl(${d.t*44} 38% 97%)`; }
+      roundRect(x,px,py,cs,cs,4); x.fillStyle=bg; x.fill();
+      if(border){ x.lineWidth=1.5; x.strokeStyle=border; x.stroke(); }
+      if(name){
+        x.fillStyle=fg; x.font=`${weight} ${cs<58?9:11}px 'Hanken Grotesk',sans-serif`;
+        x.textAlign="center"; x.textBaseline="middle";
+        wrapText(x,name,px+cs/2,py+cs/2,cs-8,cs<58?10:12);
+        x.textAlign="left";
+      }
+    }
+    for(let R=0;R<9;R++)for(let C=0;C<9;C++)drawCell(R,C);
+    // thick block separators
+    x.strokeStyle="#3a352e"; x.lineWidth=2.5;
+    for(let k=0;k<=3;k++){
+      const off=gy+gap/2+k*3*(cs+gap);
+      x.beginPath(); x.moveTo(gx+gap/2,off); x.lineTo(gx+gap/2+9*(cs+gap),off); x.stroke();
+      const offx=gx+gap/2+k*3*(cs+gap);
+      x.beginPath(); x.moveTo(offx,gy+gap/2); x.lineTo(offx,gy+gap/2+9*(cs+gap)); x.stroke();
+    }
+    // footer
+    x.fillStyle="#a7a299"; x.font="400 12px 'Hanken Grotesk',sans-serif";
+    x.fillText("1 goal · 8 themes · 64 actions", pad, S-24);
+    const url=cv.toDataURL("image/png");
+    const a=document.createElement("a"); a.href=url;
+    a.download=(state.title||"open-window-64").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")+".png";
+    a.click(); toast("Image saved");
+  }
+  function roundRect(x,px,py,w,h,r){ x.beginPath(); x.moveTo(px+r,py); x.arcTo(px+w,py,px+w,py+h,r); x.arcTo(px+w,py+h,px,py+h,r); x.arcTo(px,py+h,px,py,r); x.arcTo(px,py,px+w,py,r); x.closePath(); }
+  function wrapText(ctx,text,cx,cy,maxW,lh){
+    const words=text.split(/\s+/), lines=[]; let line="";
+    for(const w of words){ const t=line?line+" "+w:w; if(ctx.measureText(t).width>maxW&&line){ lines.push(line); line=w; } else line=t; }
+    if(line) lines.push(line);
+    const cap=Math.floor(maxW/lh*1.6)||5; if(lines.length>5){ lines.length=5; lines[4]=lines[4].slice(0,Math.max(0,lines[4].length-1))+"…"; }
+    const startY=cy-(lines.length-1)*lh/2;
+    lines.forEach((l,i)=>ctx.fillText(l,cx,startY+i*lh));
+  }
+
+  /* ============================ buttons ============================ */
+  document.getElementById("title").addEventListener("input",e=>{ state.title=e.target.value; save(); });
+  document.getElementById("btnShare").addEventListener("click",async()=>{
+    const url=location.origin+location.pathname+"#c="+encodeState(state);
+    try{ await navigator.clipboard.writeText(url); toast("Share link copied to clipboard"); }
+    catch(e){ location.hash="c="+encodeState(state); toast("Link in address bar — copy it"); }
+  });
+  document.getElementById("btnImage").addEventListener("click",exportPNG);
+  document.getElementById("btnNew").addEventListener("click",()=>{
+    if(confirm("Start a blank chart? This clears your current one on this device.")){
+      state=blankState(); paintGrid(); save(); toast("Blank chart ready");
+    }
+  });
+  document.getElementById("btnMine").addEventListener("click",()=>{
+    readOnly=false; history.replaceState(null,"",location.pathname);
+    document.getElementById("ribbon").classList.add("hidden");
+    document.getElementById("editActions").classList.remove("hidden");
+    save(); toast("Copied to your device — edit away");
+  });
+
+  /* ============================ boot ============================ */
+  function enterReadOnly(){
+    readOnly=true;
+    document.getElementById("ribbon").classList.remove("hidden");
+    document.getElementById("ribbonName").textContent = state.title?("“"+state.title+"”"):"";
+    document.getElementById("editActions").classList.add("hidden");
+    document.getElementById("title").setAttribute("readonly","");
+  }
+  function boot(){
+    buildGrid();
+    const h=location.hash;
+    if(h&&h.startsWith("#c=")){
+      try{ state=decodeState(h.slice(3)); paintGrid(); enterReadOnly(); return; }
+      catch(e){ /* bad link → fall through to local */ }
+    }
+    load(); paintGrid();
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
