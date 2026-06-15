@@ -430,7 +430,14 @@
     backdrop.classList.remove("show");
     setTimeout(()=>{ sourceEl.classList.remove("lifted"); card.innerHTML=""; card.style.display="none"; card.style.transition="none"; card.style.transform="none"; card.style.opacity=""; card.style.borderRadius=""; sourceEl.focus(); },300);
   }
-  function onKey(e){ if(e.key==="Escape") closeCard(); }
+  function onKey(e){
+    if(e.key==="Escape"){ closeCard(); return; }
+    if(e.key==="Enter"){
+      const inTextarea = e.target && e.target.tagName==="TEXTAREA";
+      // Plain Enter in the name field submits; in the notes textarea use Cmd/Ctrl+Enter so newlines still work.
+      if(!inTextarea || e.metaKey || e.ctrlKey){ e.preventDefault(); closeCard(); }
+    }
+  }
 
   /* ============================ toast ============================ */
   let toastT;
