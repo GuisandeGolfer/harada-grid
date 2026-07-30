@@ -68,6 +68,55 @@
   button.btn.primary:hover{background:#a93226}
   button.btn svg{width:15px;height:15px}
 
+  /* ---------- template picker ---------- */
+  .template-dialog{
+    width:min(760px,calc(100vw - 32px));max-height:min(760px,calc(100vh - 32px));
+    padding:0;border:1px solid var(--line);border-radius:16px;background:var(--paper-2);
+    color:var(--ink);box-shadow:var(--shadow-card);overflow:hidden;
+  }
+  .template-dialog::backdrop{background:rgba(28,25,21,.45);backdrop-filter:blur(3px)}
+  .template-head{
+    display:flex;align-items:flex-start;justify-content:space-between;gap:20px;
+    padding:22px 24px 18px;border-bottom:1px solid var(--line);
+  }
+  .template-head h2{font:600 26px/1.1 "Fraunces",serif;margin:0 0 6px}
+  .template-head p{font-size:13.5px;color:var(--ink-soft);margin:0}
+  .template-list{
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;
+    padding:18px 24px 24px;overflow-y:auto;max-height:calc(100vh - 150px);
+  }
+  .template-option{
+    font:inherit;text-align:left;border:1px solid var(--line);border-radius:11px;
+    background:var(--paper);color:var(--ink);padding:16px;cursor:pointer;
+    transition:.18s var(--ease);
+  }
+  .template-option:hover,.template-option:focus-visible{
+    outline:none;border-color:var(--seal);background:#fff;transform:translateY(-1px);
+    box-shadow:0 8px 20px -16px rgba(27,25,22,.7);
+  }
+  .template-option strong{display:block;font:600 17px/1.2 "Fraunces",serif;margin-bottom:6px}
+  .template-option span{display:block;font-size:12.5px;line-height:1.4;color:var(--ink-soft)}
+
+  /* ---------- explanation ---------- */
+  .how-it-works{
+    margin:34px 4px 0;padding:28px;border:1px solid var(--line);border-radius:14px;
+    background:rgba(255,253,250,.72);
+  }
+  .how-it-works h2{font:600 clamp(24px,3vw,30px)/1.15 "Fraunces",serif;margin:0 0 8px}
+  .how-intro{max-width:690px;color:var(--ink-soft);font-size:14.5px;line-height:1.55;margin:0}
+  .how-steps{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;
+    list-style:none;padding:0;margin:22px 0;
+  }
+  .how-steps li{border-top:1px solid var(--line);padding-top:14px;font-size:13.5px;line-height:1.5;color:var(--ink-soft)}
+  .how-steps strong{display:block;color:var(--ink);font-size:14px;margin-bottom:4px}
+  .step-number{
+    display:inline-grid;place-items:center;width:24px;height:24px;margin-right:6px;
+    border-radius:50%;background:var(--seal-soft);color:var(--seal);font-size:12px;font-weight:700;
+  }
+  .print-note{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .print-note small{font-size:12px;color:var(--ink-faint)}
+
   /* ---------- read-only banner ---------- */
   .ribbon{
     max-width:980px;margin:10px auto 0;padding:0 20px;
@@ -92,6 +141,13 @@
   .dot.core{background:var(--ink)}
   .dot.theme{background:#fff;border:1.5px solid var(--seal)}
   .dot.action{background:var(--paper-2)}
+  .empty-guide{
+    display:flex;align-items:center;justify-content:space-between;gap:18px;
+    margin:0 2px 16px;padding:13px 14px 13px 16px;border:1px solid #c0392b33;
+    border-radius:10px;background:var(--seal-soft);
+  }
+  .empty-guide p{margin:0;font-size:13.5px;line-height:1.4;color:var(--ink)}
+  .empty-guide strong{font-weight:700}
 
   .grid-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px;margin:0 -4px}
   .grid{
@@ -190,6 +246,36 @@
     header{padding-top:24px}
     #card{width:100vw;max-width:100vw;left:0;top:auto;bottom:0;border-radius:18px 18px 0 0}
     .grid{min-width:520px}
+    .template-dialog{width:calc(100vw - 20px);max-height:calc(100vh - 20px)}
+    .template-head{padding:18px}
+    .template-list{grid-template-columns:1fr;padding:14px 18px 18px}
+    .how-it-works{padding:22px 18px}
+    .how-steps{grid-template-columns:1fr;gap:10px}
+    .empty-guide{align-items:flex-start;flex-direction:column}
+  }
+
+  @media print{
+    @page{size:letter portrait;margin:.42in}
+    body{background:#fff;min-height:0}
+    header,main{width:100%;max-width:none;margin:0;padding-left:0;padding-right:0}
+    header{padding-top:0;padding-bottom:14px;display:block}
+    .actions,.legend,.empty-guide,.how-it-works,.ribbon,footer,#backdrop,#card,#toast,.template-dialog{display:none !important}
+    .kicker{font-size:8pt}
+    .title-input{width:100%;font-size:22pt;border:0 !important;padding-top:5px}
+    main{padding-top:0;padding-bottom:0}
+    .grid-scroll{overflow:visible;padding:0;margin:0}
+    .grid{
+      width:7.55in;min-width:0;max-width:100%;margin:0 auto;--gap:3px;
+      border-radius:0;box-shadow:none;break-inside:avoid;
+    }
+    .cell{font-size:7pt;border-radius:2px;padding:3px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+    body.print-blank .title-input{display:none}
+    body.print-blank .brand::after{
+      content:"Blank Open Window 64 worksheet";
+      display:block;font:600 22pt/1.1 "Fraunces",serif;padding-top:5px;color:var(--ink);
+    }
+    body.print-blank .cell .txt{display:none}
+    body.print-blank .cell.empty::after{content:""}
   }
 </style>
 </head>
@@ -197,9 +283,13 @@
   <header>
     <div class="brand">
       <span class="kicker">Open Window 64 · Harada Method</span>
-      <input id="title" class="title-input" maxlength="80" placeholder="Name your chart…" />
+      <input id="title" class="title-input" maxlength="80" placeholder="Name your chart…" aria-label="Chart title" />
     </div>
     <div class="actions" id="editActions">
+      <button class="btn" id="btnTemplates" title="Start from a completed example">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Templates
+      </button>
       <button class="btn" id="btnShare" title="Copy a shareable link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
         Share link
@@ -207,6 +297,10 @@
       <button class="btn" id="btnImage" title="Download a PNG image">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
         Save image
+      </button>
+      <button class="btn" id="btnPrint" title="Print this chart or save it as a PDF">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg>
+        Print
       </button>
       <button class="btn" id="btnNew" title="Start a blank chart">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
@@ -223,15 +317,35 @@
   </div>
 
   <main>
-    <div class="legend">
+    <div class="legend" id="gridLegend">
       <span><i class="dot core"></i> Main goal</span>
       <span><i class="dot theme"></i> 8 themes</span>
       <span><i class="dot action"></i> 64 actions</span>
       <span style="color:var(--ink-faint)">· tap a square to write its name &amp; notes</span>
     </div>
-    <div class="grid-scroll">
-      <div class="grid" id="grid" aria-label="Open Window 64 goal grid"></div>
+    <div class="empty-guide hidden" id="emptyGuide">
+      <p><strong>Start in the center.</strong> Name your main goal first, then work outward through the eight themes and their actions.</p>
+      <button class="btn primary" id="btnStartGoal">Write my main goal</button>
     </div>
+    <div class="grid-scroll">
+      <div class="grid" id="grid" aria-label="Open Window 64 goal grid" aria-describedby="gridLegend"></div>
+    </div>
+    <section class="how-it-works" aria-labelledby="howTitle">
+      <h2 id="howTitle">How the 9×9 chart works</h2>
+      <p class="how-intro">Start with one meaningful goal, identify the eight areas that make it achievable, then turn every area into eight actions you can actually take.</p>
+      <ol class="how-steps">
+        <li><strong><span class="step-number">1</span>Set the main goal</strong>Write the result you want in the dark center square. Make it specific enough to recognize when you reach it.</li>
+        <li><strong><span class="step-number">2</span>Choose eight themes</strong>Use the red-outlined squares for the skills, systems, or conditions that support the goal. Each theme is mirrored in an outer block.</li>
+        <li><strong><span class="step-number">3</span>Define 64 actions</strong>Add eight concrete actions around every mirrored theme. Those small steps turn the chart from an idea into an action plan.</li>
+      </ol>
+      <div class="print-note">
+        <button class="btn" id="btnBlankPrint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="7"/></svg>
+          Print a blank worksheet
+        </button>
+        <small>Choose “Save as PDF” in the print window for a blank printable PDF.</small>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -240,8 +354,18 @@
   </footer>
 
   <div id="backdrop"></div>
-  <div id="card" aria-modal="true" role="dialog"></div>
-  <div id="toast"></div>
+  <div id="card" aria-modal="true" role="dialog" aria-labelledby="cardLabel"></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <dialog class="template-dialog" id="templateDialog" aria-labelledby="templateTitle">
+    <div class="template-head">
+      <div>
+        <h2 id="templateTitle">Choose a starting chart</h2>
+        <p>Each example includes eight themes and sixty-four actions. Make it yours after loading.</p>
+      </div>
+      <button class="closex" id="templateClose" aria-label="Close template picker">×</button>
+    </div>
+    <div class="template-list" id="templateList"></div>
+  </dialog>
 
 <script>
 "use strict";
@@ -260,6 +384,121 @@
   let readOnly = false;
   const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const LS_KEY = "haradaGrid.v1";
+
+  /* ---- local starter charts (kept out of saved/share formats) ---- */
+  const TEMPLATES = [
+    {
+      id:"fitness", label:"Build a fitness habit",
+      summary:"Create a sustainable routine around strength, movement, food, and recovery.",
+      goal:"Train consistently for one year",
+      themes:[
+        ["Strength",["Choose 3 weekly sessions","Learn five core lifts","Track working weights","Add weight gradually","Warm up for 10 minutes","Practice good technique","Schedule a lighter week","Review progress monthly"]],
+        ["Cardio",["Walk 8,000 steps","Do two easy sessions","Add one interval session","Use the talk test","Try a new route","Track resting heart rate","Build time before speed","Take an active recovery day"]],
+        ["Mobility",["Stretch after training","Open hips each morning","Mobilize shoulders","Practice ankle range","Take movement breaks","Do a weekly yoga flow","Breathe through stretches","Retest tight areas monthly"]],
+        ["Nutrition",["Plan weekday breakfasts","Include protein each meal","Add vegetables twice daily","Carry a water bottle","Shop with a list","Prep two staples Sunday","Limit liquid calories","Review energy, not perfection"]],
+        ["Recovery",["Set a bedtime alarm","Aim for 7–8 hours","Keep the room cool","Stop caffeine by 2pm","Take one full rest day","Use a five-minute wind-down","Notice persistent soreness","Adjust after poor sleep"]],
+        ["Consistency",["Pick minimum workout rules","Put sessions on calendar","Lay out clothes at night","Use a 10-minute fallback","Never miss twice","Mark sessions completed","Pair training with a cue","Celebrate four-week streaks"]],
+        ["Environment",["Choose a nearby gym","Keep shoes visible","Create a home workout kit","Save a workout playlist","Remove common excuses","Tell a supportive friend","Book sessions in advance","Keep healthy food available"]],
+        ["Measurement",["Record starting photos","Measure waist monthly","Log every workout","Track weekly session count","Note daily energy","Test one benchmark quarterly","Review the trend monthly","Change one variable at a time"]]
+      ]
+    },
+    {
+      id:"service", label:"Launch a one-person service business",
+      summary:"Move from a clear offer to first clients, repeatable delivery, and healthy cash flow.",
+      goal:"Win 10 recurring service clients",
+      themes:[
+        ["Ideal client",["Choose one buyer type","List their costly problems","Interview five prospects","Write a one-page profile","Find where they gather","Note buying triggers","List common objections","Rank clients by fit"]],
+        ["Offer",["Define one clear outcome","Set a narrow scope","Choose a delivery timeline","Create three packages","Price on value","Add a simple guarantee","Name the service plainly","Test the pitch aloud"]],
+        ["Proof",["Complete a pilot project","Capture before-and-after","Request a testimonial","Write one case study","Build a sample deliverable","Document your method","Show measurable results","Publish a proof page"]],
+        ["Outreach",["Build a 50-lead list","Send five notes daily","Personalize the first line","Ask for introductions","Follow up three times","Track every conversation","Use a short call script","Review replies weekly"]],
+        ["Sales",["Create a discovery agenda","Ask about current costs","Confirm desired outcome","Qualify budget and timing","Send same-day proposals","Offer a clear next step","Practice objection answers","Review lost deals"]],
+        ["Delivery",["Create an intake form","Use a kickoff checklist","Set weekly milestones","Share progress updates","Create quality checks","Limit work in progress","Ask for feedback early","Close with a results recap"]],
+        ["Operations",["Open a business account","Choose simple contracts","Set invoice terms","Track income and costs","Block admin time","Back up client files","Create reusable templates","Review capacity weekly"]],
+        ["Retention",["Schedule monthly reviews","Report outcomes clearly","Suggest the next priority","Ask for referrals","Fix issues quickly","Document client preferences","Offer renewal early","Track churn reasons"]]
+      ]
+    },
+    {
+      id:"career", label:"Change careers in 12 months",
+      summary:"Build clarity, proof, relationships, and a focused search for a new field.",
+      goal:"Move into a fulfilling new career",
+      themes:[
+        ["Direction",["List energizing work","List draining work","Choose three target roles","Study 20 job postings","Rank must-have conditions","Define salary floor","Write a career hypothesis","Review direction monthly"]],
+        ["Skills",["Map current transferable skills","Identify three skill gaps","Choose one structured course","Study five hours weekly","Practice with small exercises","Ask experts what matters","Track concepts mastered","Drop low-value topics"]],
+        ["Portfolio",["Choose three proof projects","Write a project brief","Ship a small first version","Document decisions","Show measurable results","Publish work online","Request critique","Improve one piece monthly"]],
+        ["Network",["List 30 people to contact","Book two chats weekly","Join one relevant group","Attend one event monthly","Ask specific questions","Send useful follow-ups","Keep relationship notes","Offer help before asking"]],
+        ["Experience",["Volunteer for related work","Take a freelance project","Shadow a practitioner","Join an open-source effort","Lead a work initiative","Solve a real user problem","Collect references","Translate work into outcomes"]],
+        ["Positioning",["Rewrite your headline","Create a transition story","Tailor your résumé","Update your profile","Build a one-page portfolio","Prepare a 30-second intro","List proof for each claim","Ask three people to review"]],
+        ["Job search",["Build a target-company list","Set weekly application goals","Prioritize warm introductions","Customize top applications","Track every stage","Follow up professionally","Prepare questions for interviews","Review conversion rates"]],
+        ["Resilience",["Set a weekly review","Keep a rejection log","Separate feedback from identity","Protect sleep and exercise","Plan finances for transition","Celebrate leading actions","Use an accountability partner","Adjust strategy each month"]]
+      ]
+    },
+    {
+      id:"certification", label:"Study for a certification",
+      summary:"Turn the exam blueprint into a tested study system with deliberate practice.",
+      goal:"Pass my certification exam",
+      themes:[
+        ["Exam map",["Download the official blueprint","List every domain","Record domain weights","Take a diagnostic test","Mark strong topics","Mark weak topics","Estimate study hours","Choose a target exam date"]],
+        ["Schedule",["Block five study sessions","Assign domains by week","Plan weekly review time","Add two catch-up blocks","Set a daily minimum","Schedule practice exams","Protect the final review week","Review the plan Sunday"]],
+        ["Learning",["Choose one primary course","Read official references","Write questions while learning","Explain ideas aloud","Make concept maps","Use worked examples","Link new ideas to work","Summarize each domain"]],
+        ["Recall",["Create focused flashcards","Review cards daily","Use spaced repetition","Practice without notes","Write memory dumps","Mix old and new topics","Retire mastered cards","Track recall accuracy"]],
+        ["Practice",["Answer 20 questions daily","Time practice blocks","Explain every wrong answer","Tag errors by domain","Redo missed questions","Practice scenario questions","Use official samples","Track score by topic"]],
+        ["Hands-on",["Build a small lab","Repeat key procedures","Break and repair setups","Use exam-like constraints","Document commands or steps","Practice from a blank start","Time common tasks","Save a troubleshooting log"]],
+        ["Exam readiness",["Take three full mocks","Match exam timing","Remove distractions","Reach target score twice","Review flagged questions","Practice educated guessing","Plan break strategy","Set a stop-study time"]],
+        ["Exam day",["Confirm ID requirements","Test the exam software","Choose route or room","Prepare water and snacks","Sleep eight hours","Arrive or sign in early","Read every question slowly","Use remaining time to review"]]
+      ]
+    },
+    {
+      id:"baseball", label:"Improve a baseball skill",
+      summary:"Use deliberate practice to build a more consistent, powerful swing.",
+      goal:"Become a more consistent hitter",
+      themes:[
+        ["Stance",["Film stance from both sides","Set balanced foot pressure","Relax the hands","Align head over center","Choose consistent bat angle","Check plate distance","Repeat setup 25 times","Review setup weekly"]],
+        ["Timing",["Practice pitcher rhythm","Use a controlled leg load","Start earlier on velocity","Delay on off-speed","Track release-point pickup","Mix pitch speeds","Use a two-strike move","Call timing after each swing"]],
+        ["Vision",["Track pitches to the glove","Practice soft focus","Name pitch type early","Use colored-ball drills","Watch release-point video","Take live at-bats","Improve strike recognition","Review chase locations"]],
+        ["Contact",["Hit from a short toss","Practice center contact","Use a small-ball drill","Work all nine zones","Keep head still","Finish through the ball","Track hard-contact rate","Stop when mechanics fade"]],
+        ["Power",["Build lower-body strength","Train rotational speed","Sequence hips then hands","Use medicine-ball throws","Hit controlled overload bats","Drive balls gap to gap","Measure exit velocity monthly","Keep power drills low-volume"]],
+        ["Approach",["Define damage zones","Plan for the count","Hunt one pitch early","Protect with two strikes","Study pitcher tendencies","Use the whole field","Reset after each pitch","Write post-game adjustments"]],
+        ["Practice",["Schedule four hitting days","Set one focus per session","Mix tee and live work","Finish with game-speed reps","Record 20 swings weekly","Use measurable targets","Rest between quality sets","Review the week Sunday"]],
+        ["Game routine",["Scout before the game","Warm up consistently","Visualize first at-bat","Breathe before stepping in","Commit to the plan","Record each at-bat","Review video after games","Choose one next adjustment"]]
+      ]
+    },
+    {
+      id:"creative", label:"Plan a creative project",
+      summary:"Take one original idea through scope, production, feedback, and release.",
+      goal:"Finish and publish my creative project",
+      themes:[
+        ["Vision",["Write the one-sentence idea","Define the audience","Name the feeling to create","Collect ten references","Choose three design principles","Define what makes it original","Write a finished-state description","Share the vision with one person"]],
+        ["Scope",["Choose the smallest complete form","List must-have elements","Move extras to a later list","Set a length or size limit","Choose available tools","Set a firm deadline","Define what done means","Cut one risky feature"]],
+        ["Research",["Study five strong examples","Note patterns to borrow","Find primary sources","Interview one relevant person","Collect visual references","Organize useful notes","Set a research time limit","Write the key insight"]],
+        ["Practice",["Identify two weak skills","Do three focused exercises","Copy one masterwork privately","Test a difficult technique","Ask for targeted critique","Save useful experiments","Document what worked","Stop practicing and produce"]],
+        ["Production",["Break work into eight milestones","Block creation time","Start with a rough version","Work in visible passes","Keep files organized","Back up after each session","Track decisions and changes","Finish the full first draft"]],
+        ["Feedback",["Choose three honest reviewers","Ask specific questions","Separate taste from problems","Watch for repeated comments","Protect the core vision","Prioritize high-impact fixes","Thank every reviewer","Set a revision cutoff"]],
+        ["Release",["Choose one publishing channel","Write the title and summary","Create a strong preview","Prepare accessible formats","Schedule the release date","Test every link and file","Tell relevant communities","Invite useful responses"]],
+        ["Reflection",["Track time spent","Record audience response","Note proudest decisions","List avoidable mistakes","Archive project materials","Write a short retrospective","Choose one reusable lesson","Decide the next project"]]
+      ]
+    }
+  ];
+
+  function stateFromTemplate(template){
+    const s=blankState();
+    s.title=template.label;
+    s.core={name:template.goal,desc:template.summary};
+    template.themes.forEach((theme,t)=>{
+      s.themes[t]={name:theme[0],desc:"A supporting area for "+template.goal.toLowerCase()+"."};
+      theme[1].forEach((name,a)=>{ s.actions[t][a]={name,desc:""}; });
+    });
+    return s;
+  }
+  function hasChartContent(){
+    return !!(state.title.trim()||state.core.name.trim()||state.core.desc.trim()||
+      state.themes.some(x=>x.name.trim()||x.desc.trim())||
+      state.actions.some(row=>row.some(x=>x.name.trim()||x.desc.trim())));
+  }
+  function hasGridContent(){
+    return !!(state.core.name.trim()||state.core.desc.trim()||
+      state.themes.some(x=>x.name.trim()||x.desc.trim())||
+      state.actions.some(row=>row.some(x=>x.name.trim()||x.desc.trim())));
+  }
 
   /* ---- block / ring layout maps (see spec) ---- */
   // ring order of the 8 non-center cells within any 3x3 block
@@ -337,12 +576,16 @@
         const d = descriptorFor(R,C);
         const b = document.createElement("button");
         b.className="cell "+d.type;
+        b.type="button";
         b.dataset.r=R; b.dataset.c=C;
+        b.setAttribute("aria-rowindex",R+1);
+        b.setAttribute("aria-colindex",C+1);
         const tintTheme = d.type==="core" ? -1 : d.t;
         if(tintTheme>=0) b.style.backgroundColor = `hsl(${(tintTheme*44)} 38% 97%)`;
         const span=document.createElement("span"); span.className="txt";
         b.appendChild(span);
         b.addEventListener("click",()=>openCard(R,C,b));
+        b.addEventListener("keydown",e=>moveGridFocus(e,R,C));
         gridEl.appendChild(b);
         cellEls[R][C]=b;
       }
@@ -355,9 +598,21 @@
       const name=cell.name.trim();
       b.querySelector(".txt").textContent = name;
       b.classList.toggle("empty", name==="");
-      b.title = name || (d.type==="core"?"Main goal":d.type==="theme"?"Theme":"Action");
+      const kind=d.type==="core"?"Main goal":d.type==="theme"?`Theme ${d.t+1}`:`Action ${d.t+1}.${d.a+1}`;
+      const action=readOnly?"view":"edit";
+      b.title = name || kind;
+      b.setAttribute("aria-label",name?`${kind}: ${name}. Activate to ${action}.`:`Empty ${kind}. Activate to ${action}.`);
     }
     document.getElementById("title").value = state.title;
+    document.getElementById("emptyGuide").classList.toggle("hidden",readOnly||hasGridContent());
+  }
+  function moveGridFocus(e,R,C){
+    const moves={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]};
+    const move=moves[e.key]; if(!move) return;
+    e.preventDefault();
+    const nextR=Math.max(0,Math.min(8,R+move[0]));
+    const nextC=Math.max(0,Math.min(8,C+move[1]));
+    cellEls[nextR][nextC].focus();
   }
 
   /* ============================ focus card (FLIP) ============================ */
@@ -372,13 +627,13 @@
     card.dataset.ro = readOnly ? "1":"0";
     card.innerHTML = `
       <div class="card-head">
-        <span class="pill ${d.type==='core'?'core':''}">${label}</span>
+        <span class="pill ${d.type==='core'?'core':''}" id="cardLabel">${label}</span>
         <button class="closex" id="cardClose" aria-label="Close">×</button>
       </div>
       <div class="card-body">
-        <label>${d.type==='core'?'Your one big goal':d.type==='theme'?'Theme name':'Action'}</label>
+        <label for="fName">${d.type==='core'?'Your one big goal':d.type==='theme'?'Theme name':'Action'}</label>
         <input class="name" id="fName" maxlength="120" placeholder="${d.type==='action'?'What will you do?':'Write a name…'}" />
-        <label>Description &amp; notes</label>
+        <label for="fDesc">Description &amp; notes</label>
         <textarea class="desc" id="fDesc" maxlength="2000" placeholder="Why it matters, how you'll measure it, specifics…"></textarea>
       </div>
       ${readOnly?'<p class="ro-note">Read-only — make your own copy to edit.</p>':''}
@@ -388,6 +643,7 @@
 
     const nameI=card.querySelector("#fName"), descI=card.querySelector("#fDesc");
     nameI.value=cell.name; descI.value=cell.desc;
+    nameI.readOnly=readOnly; descI.readOnly=readOnly;
     if(!readOnly){
       const onInput=()=>{ cell.name=nameI.value; cell.desc=descI.value; paintGrid(); save(); };
       nameI.addEventListener("input",onInput); descI.addEventListener("input",onInput);
@@ -417,7 +673,8 @@
       requestAnimationFrame(()=>{ card.style.transform="none"; card.style.borderRadius=""; });
     }
 
-    if(!readOnly){ nameI.focus(); nameI.setSelectionRange(nameI.value.length,nameI.value.length); }
+    if(readOnly) card.querySelector("#cardClose").focus();
+    else { nameI.focus(); nameI.setSelectionRange(nameI.value.length,nameI.value.length); }
     document.addEventListener("keydown",onKey);
   }
 
@@ -440,6 +697,13 @@
   }
   function onKey(e){
     if(e.key==="Escape"){ closeCard(); return; }
+    if(e.key==="Tab"){
+      const focusable=[...card.querySelectorAll("button,input,textarea")].filter(el=>!el.disabled);
+      const first=focusable[0], last=focusable[focusable.length-1];
+      if(e.shiftKey&&document.activeElement===first){ e.preventDefault(); last.focus(); }
+      else if(!e.shiftKey&&document.activeElement===last){ e.preventDefault(); first.focus(); }
+      return;
+    }
     if(e.key==="Enter"){
       const inTextarea = e.target && e.target.tagName==="TEXTAREA";
       // Plain Enter in the name field submits; in the notes textarea use Cmd/Ctrl+Enter so newlines still work.
@@ -510,6 +774,36 @@
   }
 
   /* ============================ buttons ============================ */
+  const templateDialog=document.getElementById("templateDialog");
+  const templateList=document.getElementById("templateList");
+  document.querySelectorAll("button svg").forEach(svg=>{
+    svg.setAttribute("aria-hidden","true");
+    svg.setAttribute("focusable","false");
+  });
+  TEMPLATES.forEach(template=>{
+    const option=document.createElement("button");
+    option.className="template-option";
+    option.type="button";
+    option.innerHTML=`<strong>${template.label}</strong><span>${template.summary}</span>`;
+    option.addEventListener("click",()=>{
+      if(hasChartContent()&&!confirm("Replace your current chart with this template? Your current chart will be overwritten on this device.")) return;
+      state=stateFromTemplate(template);
+      paintGrid(); save(); templateDialog.close();
+      toast("Template loaded — make it yours");
+    });
+    templateList.appendChild(option);
+  });
+  document.getElementById("btnTemplates").addEventListener("click",()=>templateDialog.showModal());
+  document.getElementById("templateClose").addEventListener("click",()=>templateDialog.close());
+  templateDialog.addEventListener("click",e=>{ if(e.target===templateDialog) templateDialog.close(); });
+  document.getElementById("btnStartGoal").addEventListener("click",()=>openCard(4,4,cellEls[4][4]));
+  function printChart(blankWorksheet){
+    document.body.classList.toggle("print-blank",blankWorksheet);
+    requestAnimationFrame(()=>{
+      window.print();
+      document.body.classList.remove("print-blank");
+    });
+  }
   document.getElementById("title").addEventListener("input",e=>{ state.title=e.target.value; save(); });
   document.getElementById("btnShare").addEventListener("click",async()=>{
     const url=location.origin+location.pathname+"#c="+encodeState(state);
@@ -517,6 +811,8 @@
     catch(e){ location.hash="c="+encodeState(state); toast("Link in address bar — copy it"); }
   });
   document.getElementById("btnImage").addEventListener("click",exportPNG);
+  document.getElementById("btnPrint").addEventListener("click",()=>printChart(false));
+  document.getElementById("btnBlankPrint").addEventListener("click",()=>printChart(true));
   document.getElementById("btnNew").addEventListener("click",()=>{
     if(confirm("Start a blank chart? This clears your current one on this device.")){
       state=blankState(); paintGrid(); save(); toast("Blank chart ready");
@@ -526,6 +822,8 @@
     readOnly=false; history.replaceState(null,"",location.pathname);
     document.getElementById("ribbon").classList.add("hidden");
     document.getElementById("editActions").classList.remove("hidden");
+    document.getElementById("title").removeAttribute("readonly");
+    paintGrid();
     save(); toast("Copied to your device — edit away");
   });
 
@@ -536,6 +834,7 @@
     document.getElementById("ribbonName").textContent = state.title?("“"+state.title+"”"):"";
     document.getElementById("editActions").classList.add("hidden");
     document.getElementById("title").setAttribute("readonly","");
+    paintGrid();
   }
   function boot(){
     buildGrid();
