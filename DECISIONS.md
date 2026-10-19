@@ -86,3 +86,14 @@ See `SERVING.md`. Quickest: open `index.html` directly in a browser, or serve th
 6. Open on your phone → grid scrolls, focus card is a bottom sheet.
 
 After you've poked at it, tell me what to fix or refine.
+
+---
+
+## Pro tier (added 2026-10-18, approved by Diego)
+
+- **$9 one-time via Gumroad.** Unlocks unlimited saved charts + 8 premium templates. Everything that was free stays free.
+- **No backend.** The license key is checked once against Gumroad's public, CORS-enabled `POST https://api.gumroad.com/v2/licenses/verify` (`product_id` + `license_key`), then stored in `localStorage["haradaGrid.license.v1"]`. Not tamper-proof — acceptable at $9.
+- **Chart library:** `localStorage["haradaGrid.library.v1"] = {activeId, charts:[{id,state}]}`, written only for Pro users. The open chart still lives in `"haradaGrid.v1"` in the original format, so existing saved charts and share links are untouched.
+- Pro users: **New**, templates, and **Make my own copy** each add a chart instead of overwriting.
+- Config lives at the top of the `Pro license` section: `GUMROAD_PRODUCT_ID`, `GUMROAD_URL`.
+- **Backup export/import (free + Pro):** Charts dialog → Export writes `open-window-64-backup-YYYY-MM-DD.json` (`{app, version:1, exported, charts:[state…]}`); Import accepts that or a single raw chart object. Free import restores the first chart; Pro import adds all. A warning in the Charts dialog and footer tells users that clearing browser data, or 7 days without a visit in Safari, erases local charts.

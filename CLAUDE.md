@@ -97,6 +97,7 @@ change as a production deploy, because it is one.
   key/format in any non-backward-compatible way.
 - Anything touching Netlify/DNS/domain config, or the live md5 check fails after push.
 - A feature request implies accounts, sync, a server, payments, or analytics.
+  (Exception, approved 2026-10-18: the Gumroad Pro license check — see DECISIONS.md "Pro tier".)
 - You want to add any dependency, file, or build tooling.
 - Deleting or rewriting `DECISIONS.md`, `SERVING.md`, or the docs spec.
 - The habit-app expansion: that's a strategy conversation, not a unilateral refactor.
