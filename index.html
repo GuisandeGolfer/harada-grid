@@ -245,7 +245,8 @@
     position:fixed;z-index:50;left:50%;top:50%;display:none;
     width:min(460px,92vw);transform-origin:top left;
     background:var(--paper-2);border-radius:16px;box-shadow:var(--shadow-card);
-    border:1px solid var(--line);overflow:hidden;will-change:transform;
+    border:1px solid var(--line);overflow-y:auto;will-change:transform;
+    translate:-50% -50%;max-height:calc(100vh - 24px);
   }
   #card .card-head{
     padding:16px 18px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -276,6 +277,18 @@
   #card .card-foot{padding:0 18px 18px;display:flex;justify-content:flex-end;gap:9px}
   #card[data-ro="1"] input,#card[data-ro="1"] textarea{pointer-events:none;opacity:.92}
   #card .ro-note{font-size:12px;color:var(--ink-soft);padding:0 20px 16px;margin:0}
+  /* Pro hint shown on an empty action cell once the chart is half full */
+  .pro-hint{
+    margin-top:16px;padding:11px 12px;border:1px solid #c0392b33;border-radius:10px;
+    background:var(--seal-soft);font-size:12.5px;line-height:1.45;color:var(--ink);
+  }
+  .pro-hint .kicker{
+    margin:0 0 3px;font-size:10.5px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--seal);
+  }
+  .pro-hint .goal{font-family:"Fraunces",serif;font-size:15px;font-weight:600;margin:0 0 3px}
+  .pro-hint .themes{margin:0 0 8px;font-size:11.5px;color:var(--ink-soft)}
+  .pro-hint .btn{font-size:12px;padding:6px 10px}
 
   /* ---------- toast ---------- */
   #toast{
@@ -294,7 +307,7 @@
   }
   @media (max-width:560px){
     header{padding-top:24px}
-    #card{width:100vw;max-width:100vw;left:0;top:auto;bottom:0;border-radius:18px 18px 0 0}
+    #card{width:100vw;max-width:100vw;left:0;top:auto;bottom:0;border-radius:18px 18px 0 0;translate:none;max-height:calc(100vh - 20px)}
     .grid{min-width:520px}
     .template-dialog{width:calc(100vw - 20px);max-height:calc(100vh - 20px)}
     .template-head{padding:18px}
@@ -474,12 +487,13 @@
     <div class="template-head">
       <div>
         <h2 id="proTitle">Open Window 64 Pro</h2>
-        <p id="proReason">One payment. Yours forever, on this device.</p>
+        <p id="proReason">One $9 payment. No account. The same key works on every device.</p>
       </div>
       <button class="closex" id="proClose" aria-label="Close">×</button>
     </div>
     <div class="pro-body">
       <ul>
+        <li><strong>No account, no subscription.</strong> One $9 payment; the same key unlocks Pro on every device.</li>
         <li><strong>Unlimited saved charts</strong>: career, health, business, side project. Switch in one click.</li>
         <li><strong>8 premium templates</strong>, including an Ohtani-style first-round-pick chart, a debt-free plan, and a book-writing plan.</li>
         <li>Copies of shared charts are kept as new charts instead of replacing yours.</li>
@@ -942,9 +956,31 @@
   const card=document.getElementById("card");
   let openState=null; // {R,C,sourceEl}
 
+  /* Upgrade nudge: the template offer belongs at a blank square, not only at the chart limit. */
+  const PRO_HINT_TEMPLATE = TEMPLATES.find(t=>t.id==="ohtani") || TEMPLATES.find(t=>t.pro);
+  let proHintShown = false;
+  function filledActionCount(){
+    return state.actions.reduce((n,row)=>n+row.filter(x=>x.name.trim()).length,0);
+  }
+  function proHintHTML(d,cell){
+    if(proHintShown||isPro()||readOnly||d.type!=="action"||cell.name.trim()) return "";
+    const filled=filledActionCount();
+    if(filled<32) return "";
+    proHintShown=true;
+    const t=PRO_HINT_TEMPLATE;
+    const kicker=filled>=48?"Stuck on the last few squares?":"Stuck on a blank square?";
+    return `<div class="pro-hint">
+      <p class="kicker">${kicker}</p>
+      <p class="goal">Start from a finished chart: “${t.goal}”</p>
+      <p class="themes">${t.themes.map(x=>x[0]).join(" · ")}</p>
+      <button type="button" class="btn" id="proHintBtn">See the finished chart</button>
+    </div>`;
+  }
+
   function openCard(R,C,sourceEl){
     if(openState) return;
     const d=descriptorFor(R,C); const cell=getCell(d);
+    const hint=proHintHTML(d,cell);
     const label = d.type==="core" ? "Main goal" : d.type==="theme" ? ("Theme "+(d.t+1)) : ("Action "+(d.t+1)+"·"+(d.a+1));
     card.dataset.ro = readOnly ? "1":"0";
     card.innerHTML = `
@@ -957,6 +993,7 @@
         <input class="name" id="fName" maxlength="120" placeholder="${d.type==='action'?'What will you do?':'Write a name…'}" />
         <label for="fDesc">Description &amp; notes</label>
         <textarea class="desc" id="fDesc" maxlength="2000" placeholder="Why it matters, how you'll measure it, specifics…"></textarea>
+        ${hint}
       </div>
       ${readOnly?'<p class="ro-note">Read-only — make your own copy to edit.</p>':''}
       <div class="card-foot">
@@ -972,6 +1009,13 @@
     }
     card.querySelector("#cardClose").addEventListener("click",closeCard);
     card.querySelector("#cardDone").addEventListener("click",closeCard);
+    const hintBtn=card.querySelector("#proHintBtn");
+    if(hintBtn){
+      hintBtn.addEventListener("click",()=>{
+        closeCard();
+        setTimeout(()=>openPro("The Ohtani-style chart already has all 64 actions filled in."),REDUCED?0:170);
+      });
+    }
 
     openState={R,C,sourceEl};
     card.style.display="block";
@@ -1135,7 +1179,7 @@
   let afterUnlock=null;
   document.getElementById("proBuy").href=GUMROAD_URL;
   function openPro(reason,then){
-    document.getElementById("proReason").textContent=(reason?reason+" ":"")+"One $9 payment. Yours forever, on this device.";
+    document.getElementById("proReason").textContent=(reason?reason+" ":"")+"One $9 payment. No account. The same key works on every device.";
     licenseMsg.textContent="";
     afterUnlock=then||null;
     proDialog.showModal();
