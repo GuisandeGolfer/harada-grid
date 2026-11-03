@@ -12,10 +12,16 @@
 <meta property="og:site_name" content="Open Window 64" />
 <meta property="og:title" content="Ohtani Mandala Chart Maker: Free 9×9 Goal Grid" />
 <meta property="og:description" content="Make the 64-action goal chart Shohei Ohtani used in high school. Free, no sign-up. Share it or print it." />
-<meta name="twitter:card" content="summary" />
+<meta property="og:image" content="https://harada-grid.com/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content="A 9×9 Harada Method goal chart next to the headline: Make the goal chart Ohtani used in high school" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://harada-grid.com/og-image.png" />
 <meta name="twitter:title" content="Ohtani Mandala Chart Maker: Free 9×9 Goal Grid" />
 <meta name="twitter:description" content="Make the 64-action goal chart Shohei Ohtani used in high school. Free, no sign-up." />
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Open Window 64","alternateName":["Ohtani Mandala Chart Maker","Harada Method Goal Grid"],"url":"https://harada-grid.com/","applicationCategory":"LifestyleApplication","operatingSystem":"Any (web browser)","description":"Free online maker for the 9×9 mandala chart (Harada Method / Open Window 64) that Shohei Ohtani used to plan his goals in high school.","offers":[{"@type":"Offer","price":"0","priceCurrency":"USD","name":"Free"},{"@type":"Offer","price":"9","priceCurrency":"USD","name":"Pro (one-time)"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is a mandala chart?","acceptedAnswer":{"@type":"Answer","text":"A mandala chart (also called a Mandalart or “Open Window 64”) is a 9×9 grid for breaking one big goal into eight supporting themes and 64 concrete actions. The center 3×3 block holds your goal and themes. Each theme is then repeated at the center of an outer block, surrounded by its eight actions."}},{"@type":"Question","name":"What is the Harada Method?","acceptedAnswer":{"@type":"Answer","text":"The Harada Method is a goal-achievement system developed by Takashi Harada, a former track coach in Japan. The 64-cell chart is its best-known tool. It's used by athletes, students, and businesses to turn a long-term goal into daily habits."}},{"@type":"Question","name":"Is it free?","acceptedAnswer":{"@type":"Answer","text":"Yes. Making, saving, sharing, printing, and exporting a chart is free, with no sign-up. An optional one-time Pro upgrade adds unlimited saved charts and eight premium filled-in templates, including an Ohtani-style chart."}},{"@type":"Question","name":"Where is my chart saved?","acceptedAnswer":{"@type":"Answer","text":"Only in your browser on this device. Nothing is sent to a server. Clearing your browser data, or 7 days without a visit in Safari, erases it, so use Charts → Export backup to keep a copy."}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -56,6 +62,7 @@
     font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--seal);
     font-weight:600;display:flex;align-items:center;gap:9px;
   }
+  h1.kicker{margin:0;line-height:1.5}
   .kicker::before{content:"";width:18px;height:1px;background:var(--seal);display:inline-block}
   .title-input{
     font-family:"Fraunces",serif;font-weight:600;font-size:clamp(26px,4.4vw,40px);
@@ -360,7 +367,7 @@
 <body>
   <header>
     <div class="brand">
-      <span class="kicker">Open Window 64 · Harada Method</span>
+      <h1 class="kicker">Open Window 64 · Ohtani Mandala Chart Maker</h1>
       <input id="title" class="title-input" maxlength="80" placeholder="Name your chart…" aria-label="Chart title" />
     </div>
     <div class="actions" id="editActions">

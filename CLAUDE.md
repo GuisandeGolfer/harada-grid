@@ -12,23 +12,43 @@ it's Diego's proof-of-shipping and the planned seed of a larger habit app. Real 
 have real charts saved in their browsers and real share links in the wild. Treat every
 change as a production deploy, because it is one.
 
+**Scope (expanded 2026-11-03):** this is no longer a single-page toy. It is one tool in
+Diego's **product ladder**: a set of tools/products that will later be derived from his
+Obsidian vaults, the projects he works on, his skills, and AI. The longer-term aim is a
+**single brand** that ties these together and can be linked to and referenced from his
+personal-voice YouTube channel and Instagram. Practical consequences:
+- New static pages and files are allowed (content/SEO pages, example charts, guides,
+  `robots.txt`, `sitemap.xml`, images). Add every new public page to `sitemap.xml`.
+- Write copy and structure with the wider brand in mind: the chart maker should be
+  able to point to sibling tools and to Diego's channels later without a rewrite.
+- The brand name, the other tools, and how they cross-link aren't decided yet. Don't
+  invent them. Ask Diego.
+
+**SEO status (2026-11-03):** `robots.txt` + `sitemap.xml` live. Google Search Console
+and Bing Webmaster Tools set up and still indexing. Page already has a title/meta
+description, canonical, OG tags, WebApplication JSON-LD, ~750 words of visible copy
+("How the 9×9 chart works", "Shohei Ohtani's goal chart", 4-item FAQ). Known gaps: no
+`<h1>`, no FAQPage JSON-LD, no `og:image`.
+
 ## 2. Architecture & Serving
 
-- **The entire app is one file: `index.html`** (~550 lines: CSS + HTML + vanilla JS).
-  No framework, no build step, no bundler, no npm, no server code, no env vars.
+- **The chart app itself lives in `index.html`** (CSS + HTML + vanilla JS). Static
+  site files sit beside it at the repo root (`robots.txt`, `sitemap.xml`, and any new
+  pages). No framework, no build step, no bundler, no npm, no server code, no env vars.
   Only external dependency: Google Fonts (Fraunces + Hanken Grotesk) — app still works
   offline with fallback fonts.
 - **Repo:** `git@github.com:GuisandeGolfer/harada-grid.git`, branch `main`.
   Other files: `DECISIONS.md` (feature list, rationale, data model — read it),
   `SERVING.md` (run/host options), `docs/superpowers/specs/` (original design spec).
 - **Hosting (verified 2026-07-06):** served by **Netlify** on `harada-grid.com`
-  (`server: Netlify` response header). The live file is byte-identical to git HEAD.
-  GitHub Pages is NOT enabled. There is no `netlify.toml` or `.netlify/` in the repo,
-  so whether Netlify auto-deploys from GitHub or Diego deploys manually is not
-  recorded here — **do not assume `git push` ships it**. Procedure: commit, push to
-  `main`, then verify: `curl -s https://harada-grid.com | md5sum` vs
-  `md5sum index.html`. If they differ, the deploy didn't happen — tell Diego so he
-  can trigger/drag the Netlify deploy. Never claim "deployed" without this check.
+  (`server: Netlify` response header). GitHub Pages is NOT enabled. There is no
+  `netlify.toml` or `.netlify/` in the repo. **Netlify auto-deploys from `main`**
+  (verified 2026-11-03: a push was live in ~20s). Procedure: commit, push to `main`,
+  then verify every changed file live, e.g. `curl -s https://harada-grid.com | md5sum`
+  vs `md5sum index.html`, and the same for any other file you touched. If they differ
+  after a minute, the deploy didn't happen — tell Diego. Never claim "deployed"
+  without this check. Missing files return Netlify's HTML "Page not found" page, so
+  check the content you get back, not just that something loaded.
 - **Local testing:** `python3 -m http.server 8080` in this folder (see `SERVING.md`);
   on WSL2 open it from the Windows browser. Bind to `0.0.0.0` if testing from
   Diego's phone/Mac over Tailscale.
@@ -39,8 +59,9 @@ change as a production deploy, because it is one.
 
 ## 3. Conventions
 
-- Everything stays in `index.html`. Do not split into multiple files, add a `src/`
-  tree, or introduce a build step.
+- The chart app's code stays in `index.html` (don't split it into `main.js` etc.
+  without asking). New pages are plain static `.html` files that reuse the same look;
+  no `src/` tree, no build step.
 - Vanilla JS + CSS only. No libraries, no CDN scripts, no npm packages.
 - Keep the existing section banner comments; add code inside the matching section.
 - Aesthetic is deliberate (see `DECISIONS.md`): warm paper background, one accent
@@ -73,10 +94,11 @@ change as a production deploy, because it is one.
 5. **Adding dependencies or a build pipeline.** A weaker model reflexively reaches
    for React/Tailwind/html2canvas/npm. Rule: zero dependencies. The PNG export is
    hand-drawn on `<canvas>` on purpose; the FLIP animation is hand-rolled on purpose.
-6. **Editing the wrong artifact / partial deploys.** There is exactly one deployable
-   file. Rule: changes go in `/home/diegog/workspace/harada-grid/index.html`, get
-   committed on `main`, and the live-vs-local md5 must match afterward. Don't create
-   `index2.html`, `main.js`, or "refactor" files.
+6. **Editing the wrong artifact / partial deploys.** The repo is at
+   `~/Desktop/harada-grid` on Diego's Mac. Chart-app changes go in `index.html`;
+   everything is committed on `main`, and every changed file must match live
+   afterward. Don't create `index2.html`, `main.js`, or "refactor" copies. A new page
+   is fine; a duplicate of an existing one is not.
 
 ## 5. Quality Bar (all checkable — run before saying "done")
 
@@ -88,8 +110,8 @@ change as a production deploy, because it is one.
 - [ ] **An old share link generated BEFORE your change still decodes correctly.**
 - [ ] "Save image" produces the 1200px PNG and it looks right.
 - [ ] Narrow window/phone: grid scrolls, focus card becomes a bottom sheet.
-- [ ] Still exactly one HTML file, zero new dependencies, no build step.
-- [ ] After push: `curl -s https://harada-grid.com | md5sum` == `md5sum index.html`.
+- [ ] Zero new dependencies, no build step. Any new public page is in `sitemap.xml`.
+- [ ] After push: every changed file matches live (md5 check from §2).
 
 ## 6. Escalation — Stop and Ask Diego When
 
@@ -98,6 +120,9 @@ change as a production deploy, because it is one.
 - Anything touching Netlify/DNS/domain config, or the live md5 check fails after push.
 - A feature request implies accounts, sync, a server, payments, or analytics.
   (Exception, approved 2026-10-18: the Gumroad Pro license check — see DECISIONS.md "Pro tier".)
-- You want to add any dependency, file, or build tooling.
+- You want to add any dependency or build tooling. (New static pages/files are OK.)
+- Naming the brand, adding cross-links to other tools or Diego's YouTube/Instagram,
+  or changing the site's positioning: those are brand decisions, ask first.
 - Deleting or rewriting `DECISIONS.md`, `SERVING.md`, or the docs spec.
-- The habit-app expansion: that's a strategy conversation, not a unilateral refactor.
+- The habit-app / product-ladder expansion: that's a strategy conversation, not a
+  unilateral refactor.
